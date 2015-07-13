@@ -37,3 +37,5 @@ titan.setup         A script to setup the environment on Titan
 src                 Folder containing all the source files
 output              An empty directory initially
                     Necessary for output data files
+                    Contains the file 'nothing.txt' just to put this directory 
+                        into git
