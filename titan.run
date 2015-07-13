@@ -1,0 +1,16 @@
+#PBS -A PHY011
+#PBS -N HAUCK_ENTROPY
+#PBS -j oe
+#PBS -V
+#PBS -l walltime=10:00,nodes=64
+
+cd $PBS_O_WORKDIR
+rm /tmp/work/$USER/*
+cp input.deck /tmp/work/$USER
+cp *.x /tmp/work/$USER
+mkdir /tmp/work/$USER/output
+cd /tmp/work/$USER
+
+export OMP_NUM_THREADS=16
+aprun -n64 -d16 ./solver_cuda.x > output.txt
+

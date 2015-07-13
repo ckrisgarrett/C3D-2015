@@ -1,0 +1,54 @@
+SOLVER mn       # Solver Type: pn or mn
+TFINAL 0.1
+OUTDT 1000
+OUTPUT_DATA true
+OUTPUT_OPT_STATS true       # Only meant for 1 node runs
+OUTPUT_TIMINGS true
+
+NX 50
+NY 50
+NZ 50
+
+MPIX 2
+MPIY 2
+MPIZ 2
+
+AX -1.5
+AY -1.5
+AZ -1.5
+BX 1.5
+BY 1.5
+BZ 1.5
+
+MOMENT_ORDER 3
+QUAD_ORDER 12
+
+CFL_FACTOR 0.9
+
+CROSS_SECTION 1.0
+INIT_FLOOR 1e-8
+GAUSS_SIGMA 0.2
+INIT_COND gaussian
+THETA 2.0
+
+OMP_THREADS 4
+
+
+# Pn Variables
+PN_USE_KINETIC_FLUX 0
+
+
+# Mn Variables
+MN_TOL 1.0e-4
+MN_TOL_GAMMA 1.1
+MN_COND_H_MAX 1.0e10
+MN_MAX_ITER 100
+MN_BATCHED true             # true for cuda, false for not cuda
+MN_USE_GAUNT_COEF true
+MN_USE_GAUNT_SPARSE true
+
+
+# Cuda Variables
+CUDA_KINETIC true           # true for cuda, false for not cuda
+CUDA_BATCHED true           # true for cuda, false for not cuda
+CUDA_BATCH_SIZE 50

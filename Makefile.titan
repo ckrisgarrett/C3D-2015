@@ -1,0 +1,59 @@
+# The compile commands
+CC_OPT     = CC -Wall -O3
+CC_DEBUG   = CC -Wall -g
+CC_NVCC    = nvcc -O3 -arch=sm_35
+
+
+# Source files
+SRC_FILES = src/main.cpp src/global.cpp src/input_deck_reader.cpp src/timer.cpp src/utils.cpp \
+            src/init.cpp src/output.cpp src/update.cpp src/comm.cpp src/flux_moment.cpp \
+            src/flux_kinetic.cpp src/opt/opt.cpp src/opt/fobj.cpp src/opt/linesearch.cpp \
+            src/opt/optBatch.cpp
+
+# Cuda source files
+CUDA_SRC_FILES = src/cuda/cuda_flux_kinetic.cu src/cuda/cuda_solveH.cu
+CUDA_OBJ_FILES = cuda_flux_kinetic.o cuda_solveH.o
+
+
+# Libraries
+CPU_LIB  = -lgsl -lgslcblas -lrt
+#MPI_LIB = -lmpi
+CUDA_LIB = -lcudart -lcublas
+
+# Include paths
+#MPI_INCLUDE = -I/usr/lib/mpich2/include
+
+# Flags
+OMP_FLAGS = -fopenmp -DUSE_OPENMP
+MPI_FLAGS = -DUSE_MPI
+CUDA_FLAGS = -DUSE_CUDA
+
+
+# Build commands
+.PHONY: default all
+default:
+	$(MAKE) omp
+all:
+	$(MAKE) omp
+	$(MAKE) mpi
+	$(MAKE) cuda
+
+
+.PHONY: omp
+omp: 
+	$(CC_OPT) $(OMP_FLAGS) $(MPI_FLAGS) -o solver_omp.x $(SRC_FILES) $(CPU_LIB) $(MPI_LIB)
+
+.PHONY: mpi
+mpi: 
+	$(CC_OPT) $(MPI_FLAGS) -o solver_mpi.x $(SRC_FILES) $(CPU_LIB) $(MPI_LIB)
+
+.PHONY: cuda
+cuda: 
+	$(CC_NVCC) -c $(CUDA_SRC_FILES)
+	$(CC_OPT) $(OMP_FLAGS) $(MPI_FLAGS) $(CUDA_FLAGS) -o solver_cuda.x $(SRC_FILES) $(CUDA_OBJ_FILES) $(CPU_LIB) $(CUDA_LIB) $(MPI_LIB)
+	rm $(CUDA_OBJ_FILES)
+
+.PHONY: clean
+clean:
+	rm -f *.o
+
